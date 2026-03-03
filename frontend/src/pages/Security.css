@@ -1,0 +1,295 @@
+.security-page {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #C6A75E;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.back-button:hover {
+  background: rgba(198, 167, 94, 0.1);
+  transform: translateY(-50%) translateX(-5px);
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  color: #0B1C2D;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #0B1C2D, #C6A75E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header p {
+  color: #666;
+  font-size: 1.125rem;
+}
+
+.security-content {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.security-intro {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.security-icon-large {
+  color: #C6A75E;
+  background: rgba(198, 167, 94, 0.1);
+  padding: 1rem;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+}
+
+.security-intro h2 {
+  font-size: 1.75rem;
+  color: #0B1C2D;
+  margin-bottom: 1rem;
+}
+
+.security-intro p {
+  color: #666;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.security-card {
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.security-card:hover {
+  transform: translateY(-4px);
+  border-color: #C6A75E;
+  box-shadow: 0 8px 24px rgba(198, 167, 94, 0.1);
+}
+
+.security-card-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(198, 167, 94, 0.1);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C6A75E;
+  margin-bottom: 1.5rem;
+}
+
+.security-card h3 {
+  font-size: 1.25rem;
+  color: #0B1C2D;
+  margin-bottom: 0.75rem;
+}
+
+.security-description {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.security-details {
+  color: #C6A75E;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.security-badges {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(198, 167, 94, 0.1);
+  border-radius: 40px;
+  color: #C6A75E;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.badge svg {
+  color: #C6A75E;
+}
+
+.security-practices {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.security-practices h3 {
+  font-size: 1.25rem;
+  color: #0B1C2D;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.practices-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.practice-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+}
+
+.practice-item span {
+  color: #444;
+  font-size: 0.9rem;
+}
+
+.security-report {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0B1C2D 0%, #1a2b3c 100%);
+  border-radius: 12px;
+  color: white;
+}
+
+.security-report h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.security-report p {
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.report-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.report-link {
+  color: #C6A75E;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.report-link:hover {
+  text-decoration: underline;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: #C6A75E;
+  color: #0B1C2D;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  background: #d4b97a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(198, 167, 94, 0.3);
+}
+
+@media (max-width: 768px) {
+  .security-page {
+    padding: 1rem;
+  }
+
+  .page-header {
+    padding-top: 3rem;
+  }
+
+  .back-button {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .back-button:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .security-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .practices-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .security-badges {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .security-report {
+    padding: 1.5rem;
+  }
+}

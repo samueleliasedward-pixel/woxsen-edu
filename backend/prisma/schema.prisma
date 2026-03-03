@@ -1,0 +1,419 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  role          Role      @default(STUDENT)
+  phone         String?
+  profileImage  String?
+  isActive      Boolean   @default(true)
+  lastLogin     DateTime?
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Profiles
+  studentProfile StudentProfile?
+  facultyProfile FacultyProfile?
+  adminProfile   AdminProfile?
+  
+  // Courses taught (for faculty)
+  taughtCourses Course[] @relation("FacultyCourses")
+  
+  // Timetable entries for faculty
+  timetableEntries TimetableEntry[] @relation("FacultyTimetable")
+  
+  // Deadlines created by user
+  createdDeadlines Deadline[] @relation("CreatedDeadlines")
+  
+  // Files uploaded by user
+  uploadedFiles File[] @relation("UserFiles")
+  
+  // Folders created by user
+  createdFolders Folder[] @relation("UserFolders")
+  
+  // Chat messages by user
+  chatMessages ChatMessage[]
+  
+  // Announcements created by user
+  createdAnnouncements Announcement[]
+  
+  // Notifications for user
+  notifications Notification[]
+  
+  // Queries assigned to faculty
+  assignedQueries Query[] @relation("FacultyQueries")
+  
+  // Messages sent by user
+  queryMessages QueryMessage[]
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentId     String   @unique
+  program       String
+  department    String
+  year          Int
+  semester      Int
+  batch         String
+  cgpa          Float?   @default(0.0)
+  totalCredits  Int      @default(0)
+  attendance    Float?   @default(0.0)
+  dateOfBirth   DateTime?
+  address       String?
+  phone         String?
+  emergencyContact Json?
+
+  // Relations
+  enrollments      Enrollment[]
+  attendanceRecords AttendanceRecord[]
+  grades           Grade[]
+  submissions      Submission[]
+  queries          Query[]
+
+  @@map("student_profiles")
+}
+
+model FacultyProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId    String   @unique
+  designation   String
+  department    String
+  qualification String
+  specialization String[]
+  joinDate      DateTime
+  officeHours   Json?
+  cabin         String?
+  phone         String?
+
+  @@map("faculty_profiles")
+}
+
+model AdminProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeId    String   @unique
+  department    String
+  role          String
+  phone         String?
+
+  @@map("admin_profiles")
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  description String?
+  department  String
+  credits     Int
+  facultyId   String?
+  faculty     User?    @relation("FacultyCourses", fields: [facultyId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  enrollments      Enrollment[]
+  assignments      Assignment[]
+  exams            Exam[]
+  attendanceRecords AttendanceRecord[]
+  timetableEntries TimetableEntry[]
+  deadlines        Deadline[]
+  files            File[]
+  folders          Folder[]
+  queries          Query[]
+
+  @@map("courses")
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  studentId String
+  courseId  String
+  enrolledAt DateTime @default(now())
+
+  // Relations
+  student StudentProfile @relation(fields: [studentId], references: [id])
+  course  Course        @relation(fields: [courseId], references: [id])
+
+  @@unique([studentId, courseId])
+  @@map("enrollments")
+}
+
+model Assignment {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  courseId    String
+  dueDate     DateTime
+  totalPoints Int      @default(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  course       Course       @relation(fields: [courseId], references: [id])
+  grades       Grade[]
+  submissions  Submission[]
+
+  @@map("assignments")
+}
+
+model Exam {
+  id          String   @id @default(cuid())
+  title       String
+  courseId    String
+  date        DateTime
+  totalMarks  Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@map("exams")
+}
+
+model AttendanceRecord {
+  id        String   @id @default(cuid())
+  studentId String
+  courseId  String
+  date      DateTime
+  status    String
+
+  // Relations
+  student StudentProfile @relation(fields: [studentId], references: [id])
+  course  Course        @relation(fields: [courseId], references: [id])
+
+  @@unique([studentId, courseId, date])
+  @@map("attendance_records")
+}
+
+model Grade {
+  id           String   @id @default(cuid())
+  studentId    String
+  assignmentId String
+  score        Float
+  submissionId String?  @unique
+  submission   Submission? @relation(fields: [submissionId], references: [id])
+  createdAt    DateTime @default(now())
+
+  // Relations
+  student    StudentProfile @relation(fields: [studentId], references: [id])
+  assignment Assignment    @relation(fields: [assignmentId], references: [id])
+
+  @@map("grades")
+}
+
+model TimetableEntry {
+  id        String   @id @default(cuid())
+  day       String
+  time      String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  facultyId String
+  faculty   User     @relation("FacultyTimetable", fields: [facultyId], references: [id], onDelete: Cascade)
+  room      String
+  batch     String
+  year      Int
+  semester  Int
+  type      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([day, time, room, batch])
+  @@map("timetable_entries")
+}
+
+model Deadline {
+  id            String   @id @default(cuid())
+  title         String
+  type          String
+  courseId      String
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  description   String?
+  dueDate       DateTime
+  submissions   Int      @default(0)
+  totalStudents Int      @default(0)
+  status        String   @default("active")
+  priority      String   @default("medium")
+  createdById   String
+  createdBy     User     @relation("CreatedDeadlines", fields: [createdById], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("deadlines")
+}
+
+model File {
+  id           String   @id @default(cuid())
+  name         String
+  originalName String
+  path         String
+  size         Int
+  type         String
+  extension    String
+  folderId     String?
+  folder       Folder?  @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  uploadedById String
+  uploadedBy   User     @relation("UserFiles", fields: [uploadedById], references: [id])
+  courseId     String?
+  course       Course?  @relation(fields: [courseId], references: [id])
+  description  String?
+  downloads    Int      @default(0)
+  isPublic     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("files")
+}
+
+model Folder {
+  id          String   @id @default(cuid())
+  name        String
+  path        String
+  parentId    String?
+  parent      Folder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
+  children    Folder[] @relation("FolderHierarchy")
+  files       File[]
+  createdById String
+  createdBy   User     @relation("UserFolders", fields: [createdById], references: [id])
+  courseId    String?
+  course      Course?  @relation(fields: [courseId], references: [id])
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([path, name])
+  @@map("folders")
+}
+
+model ChatMessage {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId    String
+  role         String
+  content      String
+  tokens       Int?     @default(0)
+  model        String?
+  responseTime Int?
+  flagged      Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@map("chat_messages")
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  target      String
+  priority    String
+  pinned      Boolean  @default(false)
+  expiresAt   DateTime?
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("announcements")
+}
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  level     String
+  message   String
+  source    String?
+  user      String?
+  details   Json?
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+
+  @@map("system_logs")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  data      Json?
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+model Submission {
+  id           String   @id @default(cuid())
+  studentId    String
+  student      StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  files        Json?
+  comments     String?
+  status       String   @default("SUBMITTED")
+  submittedAt  DateTime @default(now())
+  gradedAt     DateTime?
+  grade        Grade?
+
+  @@unique([assignmentId, studentId])
+  @@map("submissions")
+}
+
+model Query {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  studentId   String
+  student     StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  facultyId   String
+  faculty     User     @relation("FacultyQueries", fields: [facultyId], references: [id])
+  courseId    String?
+  course      Course?  @relation(fields: [courseId], references: [id])
+  status      String   @default("pending")
+  priority    String   @default("normal")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  messages    QueryMessage[]
+
+  @@map("queries")
+}
+
+model QueryMessage {
+  id        String   @id @default(cuid())
+  content   String
+  queryId   String
+  query     Query    @relation(fields: [queryId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("query_messages")
+}
+
+enum Role {
+  STUDENT
+  FACULTY
+  ADMIN
+}

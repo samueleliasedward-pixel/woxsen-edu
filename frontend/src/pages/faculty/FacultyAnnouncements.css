@@ -1,0 +1,123 @@
+.faculty-announcements {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.faculty-announcements h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.announcements-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.announcement-card {
+  padding: 1.5rem;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.announcement-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.announcement-card.pinned {
+  border-left: 4px solid #C6A75E;
+  background: linear-gradient(to right, rgba(198, 167, 94, 0.02), white);
+}
+
+.pinned-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: #C6A75E;
+}
+
+.announcement-card h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+  padding-right: 2rem;
+}
+
+.announcement-card p {
+  color: #666;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.announcement-card .meta {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.announcement-card .meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.announcement-card .meta svg {
+  color: #C6A75E;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  margin-top: 2rem;
+}
+
+.empty-state svg {
+  color: #C6A75E;
+  margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: #666;
+}
+
+/* Loading State */
+.faculty-announcements > div:first-child:not(.announcements-list) {
+  text-align: center;
+  padding: 4rem;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .faculty-announcements {
+    padding: 1rem;
+  }
+
+  .faculty-announcements h1 {
+    font-size: 1.5rem;
+  }
+
+  .announcements-list {
+    grid-template-columns: 1fr;
+  }
+
+  .announcement-card .meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

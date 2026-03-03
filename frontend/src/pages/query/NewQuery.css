@@ -1,0 +1,172 @@
+.new-query-page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #C6A75E;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+}
+
+.back-button:hover {
+  background: rgba(198, 167, 94, 0.1);
+  transform: translateY(-50%) translateX(-5px);
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  color: #0B1C2D;
+  margin-bottom: 0.25rem;
+}
+
+.page-header p {
+  color: #666;
+  margin: 0;
+}
+
+.new-query-card {
+  padding: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0B1C2D;
+  margin-bottom: 0.5rem;
+}
+
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #C6A75E;
+  box-shadow: 0 0 0 3px rgba(198, 167, 94, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+}
+
+.tips-box {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(198, 167, 94, 0.05);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #C6A75E;
+}
+
+.tips-box svg {
+  color: #C6A75E;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.tips-box strong {
+  display: block;
+  color: #0B1C2D;
+  margin-bottom: 0.5rem;
+}
+
+.tips-box ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #666;
+}
+
+.tips-box li {
+  margin-bottom: 0.25rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.error-card {
+  text-align: center;
+  padding: 3rem;
+}
+
+.error-card h2 {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.error-card p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .new-query-page {
+    padding: 1rem;
+  }
+
+  .page-header {
+    padding-top: 3rem;
+  }
+
+  .back-button {
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .back-button:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .tips-box {
+    flex-direction: column;
+  }
+}

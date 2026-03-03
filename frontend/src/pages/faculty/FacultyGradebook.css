@@ -1,0 +1,238 @@
+import React, { useState } from 'react';
+import { 
+  Download, Upload, Search, Filter, Eye,
+  ChevronDown, ChevronUp, Save, Edit2
+} from 'lucide-react';
+import Card from '../../components/ui/Card';
+import Button from '../../components/ui/Button';
+import './FacultyGradebook.css';
+
+const FacultyGradebook = () => {
+  const [selectedCourse, setSelectedCourse] = useState('CS501');
+  const [selectedAssignment, setSelectedAssignment] = useState('all');
+  const [expandedRow, setExpandedRow] = useState(null);
+
+  const courses = [
+    { code: 'CS501', name: 'Machine Learning' },
+    { code: 'CS502', name: 'Cloud Computing' },
+    { code: 'CS504', name: 'Deep Learning' },
+  ];
+
+  const assignments = [
+    { id: 1, name: 'Assignment 1', maxScore: 100, weight: 15 },
+    { id: 2, name: 'Assignment 2', maxScore: 100, weight: 15 },
+    { id: 3, name: 'Assignment 3', maxScore: 100, weight: 20 },
+    { id: 4, name: 'Mid Term Exam', maxScore: 100, weight: 25 },
+    { id: 5, name: 'Final Project', maxScore: 100, weight: 25 },
+  ];
+
+  const students = [
+    { 
+      id: 1, 
+      name: 'Rajesh Kumar', 
+      studentId: 'WXU2026001',
+      scores: { 1: 85, 2: 78, 3: null, 4: null, 5: null },
+      attendance: 92,
+      submissions: 2
+    },
+    { 
+      id: 2, 
+      name: 'Priya Sharma', 
+      studentId: 'WXU2026002',
+      scores: { 1: 92, 2: 88, 3: null, 4: null, 5: null },
+      attendance: 95,
+      submissions: 2
+    },
+    { 
+      id: 3, 
+      name: 'Arjun Patel', 
+      studentId: 'WXU2026003',
+      scores: { 1: 67, 2: 72, 3: null, 4: null, 5: null },
+      attendance: 78,
+      submissions: 2
+    },
+    { 
+      id: 4, 
+      name: 'Neha Singh', 
+      studentId: 'WXU2026004',
+      scores: { 1: 88, 2: 91, 3: null, 4: null, 5: null },
+      attendance: 94,
+      submissions: 2
+    },
+    { 
+      id: 5, 
+      name: 'Vikram Mehta', 
+      studentId: 'WXU2026005',
+      scores: { 1: 45, 2: 52, 3: null, 4: null, 5: null },
+      attendance: 65,
+      submissions: 1
+    },
+  ];
+
+  const calculateGrade = (avg) => {
+    if (avg >= 90) return { grade: 'A', color: '#10b981' };
+    if (avg >= 80) return { grade: 'B', color: '#3b82f6' };
+    if (avg >= 70) return { grade: 'C', color: '#f59e0b' };
+    if (avg >= 60) return { grade: 'D', color: '#f97316' };
+    return { grade: 'F', color: '#ef4444' };
+  };
+
+  const calculateAverage = (scores) => {
+    const validScores = Object.values(scores).filter(s => s !== null);
+    if (validScores.length === 0) return 0;
+    return validScores.reduce((a, b) => a + b, 0) / validScores.length;
+  };
+
+  return (
+    <div className="faculty-gradebook">
+      <div className="page-header">
+        <div>
+          <h1>Gradebook</h1>
+          <p>Manage student grades and performance</p>
+        </div>
+        <div className="header-actions">
+          <Button variant="outline" size="sm" icon={Download}>
+            Export
+          </Button>
+          <Button variant="outline" size="sm" icon={Upload}>
+            Import
+          </Button>
+          <Button variant="primary" size="sm" icon={Save}>
+            Save Changes
+          </Button>
+        </div>
+      </div>
+
+      <div className="gradebook-controls">
+        <div className="course-selector">
+          <label>Course</label>
+          <select value={selectedCourse} onChange={(e) => setSelectedCourse(e.target.value)}>
+            {courses.map(course => (
+              <option key={course.code} value={course.code}>{course.code} - {course.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="assignment-selector">
+          <label>Assignment</label>
+          <select value={selectedAssignment} onChange={(e) => setSelectedAssignment(e.target.value)}>
+            <option value="all">All Assignments</option>
+            {assignments.map(assignment => (
+              <option key={assignment.id} value={assignment.id}>{assignment.name}</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="search-box">
+          <Search size={18} />
+          <input type="text" placeholder="Search students..." />
+        </div>
+      </div>
+
+      <Card className="gradebook-table-container">
+        <table className="gradebook-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>ID</th>
+              {assignments.map(assignment => (
+                <th key={assignment.id}>
+                  <div className="assignment-header">
+                    <span>{assignment.name}</span>
+                    <span className="assignment-weight">{assignment.weight}%</span>
+                  </div>
+                </th>
+              ))}
+              <th>Attendance</th>
+              <th>Average</th>
+              <th>Grade</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map(student => {
+              const avg = calculateAverage(student.scores);
+              const grade = calculateGrade(avg);
+              
+              return (
+                <React.Fragment key={student.id}>
+                  <tr 
+                    className={expandedRow === student.id ? 'expanded' : ''}
+                    onClick={() => setExpandedRow(expandedRow === student.id ? null : student.id)}
+                  >
+                    <td>
+                      <div className="student-cell">
+                        <div className="student-avatar">
+                          {student.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <span>{student.name}</span>
+                      </div>
+                    </td>
+                    <td>{student.studentId}</td>
+                    {assignments.map(assignment => (
+                      <td key={assignment.id} className="score-cell">
+                        {student.scores[assignment.id] !== null ? (
+                          <span className="score">{student.scores[assignment.id]}</span>
+                        ) : (
+                          <span className="no-score">-</span>
+                        )}
+                      </td>
+                    ))}
+                    <td>
+                      <span className={`attendance ${student.attendance >= 75 ? 'good' : 'poor'}`}>
+                        {student.attendance}%
+                      </span>
+                    </td>
+                    <td>
+                      <span className="average">{avg.toFixed(1)}</span>
+                    </td>
+                    <td>
+                      <span className="grade" style={{ color: grade.color }}>
+                        {grade.grade}
+                      </span>
+                    </td>
+                    <td>
+                      <button className="action-btn" onClick={(e) => e.stopPropagation()}>
+                        <Edit2 size={14} />
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedRow === student.id && (
+                    <tr className="expanded-details">
+                      <td colSpan="9">
+                        <div className="student-details">
+                          <h4>Submission Details</h4>
+                          <div className="submissions-grid">
+                            {assignments.map(assignment => (
+                              <div key={assignment.id} className="submission-detail">
+                                <span className="detail-label">{assignment.name}:</span>
+                                <input 
+                                  type="number" 
+                                  value={student.scores[assignment.id] || ''}
+                                  placeholder="Enter score"
+                                  className="score-input"
+                                  onClick={(e) => e.stopPropagation()}
+                                />
+                                <span className="max-score">/ {assignment.maxScore}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="detail-actions">
+                            <Button size="sm">Save Scores</Button>
+                            <Button size="sm" variant="outline">Add Comment</Button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  );
+};
+
+export default FacultyGradebook;

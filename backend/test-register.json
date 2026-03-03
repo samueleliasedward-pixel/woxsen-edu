@@ -1,0 +1,12 @@
+﻿{
+    "email": "samuel.edward@woxsen.edu",
+    "password": "password123",
+    "name": "Samuel Edward",
+    "role": "student",
+    "studentId": "23WU0101082",
+    "program": "B.Tech CSE",
+    "year": 3,
+    "semester": 6,
+    "department": "Computer Science",
+    "batch": "2023-2027"
+}

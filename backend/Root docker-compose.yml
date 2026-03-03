@@ -1,0 +1,108 @@
+version: '3.8' 
+ 
+services: 
+  postgres: 
+    image: postgres:15-alpine 
+    container_name: woxsen-postgres 
+    environment: 
+      POSTGRES_DB: woxsen_edu 
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: password 
+    ports: 
+      - "5432:5432" 
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data 
+    networks: 
+      - woxsen-network 
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U postgres"] 
+      interval: 10s 
+      timeout: 5s 
+      retries: 5 
+ 
+  redis: 
+    image: redis:7-alpine 
+    container_name: woxsen-redis 
+    ports: 
+      - "6379:6379" 
+    volumes: 
+      - redis_data:/data 
+    networks: 
+      - woxsen-network 
+    healthcheck: 
+      test: ["CMD", "redis-cli", "ping"] 
+      interval: 10s 
+      timeout: 5s 
+      retries: 5 
+ 
+  backend: 
+    build: ./backend 
+    container_name: woxsen-backend 
+    ports: 
+      - "3001:3001" 
+    environment: 
+      NODE_ENV: development 
+      DATABASE_URL: 
+postgresql://postgres:password@postgres:5432/woxsen_edu?schema=public 
+      REDIS_URL: redis://redis:6379 
+      JWT_SECRET: your-super-secret-jwt-key-change-this 
+      JWT_REFRESH_SECRET: your-refresh-secret-key-change-this 
+      AI_SERVICE_URL: http://ai-service:8000 
+      FRONTEND_URL: http://localhost:3000 
+    depends_on: 
+      postgres: 
+        condition: service_healthy 
+      redis: 
+        condition: service_healthy 
+    volumes: 
+      - ./backend/uploads:/app/uploads 
+    networks: 
+      - woxsen-network 
+    command: sh -c "npx prisma migrate deploy && npm run seed && npm run dev" 
+ 
+  ai-service: 
+    build: ./ai-service 
+    container_name: woxsen-ai-service 
+    ports: 
+      - "8000:8000" 
+    environment: 
+      OLLAMA_BASE_URL: http://ollama:11434 
+    depends_on: 
+      - ollama 
+    volumes: 
+      - ./ai-service/vector_db_dir:/app/vector_db_dir 
+    networks: 
+      - woxsen-network 
+ 
+  ollama: 
+    image: ollama/ollama:latest 
+    container_name: woxsen-ollama 
+    ports: 
+      - "11434:11434" 
+    volumes: 
+      - ollama_data:/root/.ollama 
+    networks: 
+      - woxsen-network 
+    command: serve 
+ 
+  frontend: 
+    build: ./client 
+    container_name: woxsen-frontend 
+    ports: 
+      - "3000:80" 
+    environment: 
+      VITE_API_URL: http://localhost:3001/api 
+      VITE_WS_URL: ws://localhost:3001 
+    depends_on: 
+      - backend 
+    networks: 
+      - woxsen-network 
+ 
+volumes: 
+  postgres_data: 
+  redis_data: 
+  ollama_data: 
+ 
+networks: 
+  woxsen-network: 
+    driver: bridge
